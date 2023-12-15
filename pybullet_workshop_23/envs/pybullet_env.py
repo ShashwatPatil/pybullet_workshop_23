@@ -8,6 +8,7 @@ import cv2 as cv
 import numpy as np
 import random
 from os.path import normpath, basename
+import os
 import time
 
 
@@ -27,13 +28,19 @@ class PybulletEnv(gym.Env):
         self.load_env()
 
     def load_env(self):
-        self.arena = p.loadURDF('urdf/arena/arena_v0.urdf')
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        urdf_dir = os.path.join(current_dir, 'urdf')
+        print(urdf_dir)
+
+        self.arena = p.loadURDF(os.path.join(urdf_dir, 'arena/arena_v0.urdf'))
         if self.car_location is not None:
-            self.car = p.loadURDF('urdf/car/car.urdf', self.car_location, p.getQuaternionFromEuler([0, 0, 0]))
+            self.car = p.loadURDF(os.path.join(urdf_dir, 'car/car.urdf'), self.car_location,
+                                  p.getQuaternionFromEuler([0, 0, 0]))
         if self.ball_location is not None:
-            self.ball = p.loadURDF('urdf/ball/ball_red.urdf', self.ball_location, p.getQuaternionFromEuler([0, 0, 0]))
+            self.ball = p.loadURDF(os.path.join(urdf_dir, 'ball/ball_red.urdf'), self.ball_location,
+                                   p.getQuaternionFromEuler([0, 0, 0]))
         if self.humanoid_location is not None:
-            self.humnaoid = p.loadURDF('urdf/humanoid/humanoid_red.urdf', self.humanoid_location,
+            self.humanoid = p.loadURDF(os.path.join(urdf_dir, 'humanoid/humanoid_red.urdf'), self.humanoid_location,
                                        p.getQuaternionFromEuler([0, 0, 0]))
         if self.visual_cam_settings is not None:
             p.resetDebugVisualizerCamera(self.visual_cam_settings['cam_dist'], self.visual_cam_settings['cam_yaw'],

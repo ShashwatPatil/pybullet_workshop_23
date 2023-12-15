@@ -3,7 +3,7 @@ from pathlib import Path
 
 setuptools.setup(
     name='pybullet_workshop_23',
-    version='0.0.1',
+    version='0.0.4',
     description="A OpenAI Gym Env for pybullet and vision",
     long_description=Path("Readme.md").read_text(),
     long_description_content_type="text/markdown",
