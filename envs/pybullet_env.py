@@ -11,7 +11,7 @@ from os.path import normpath, basename
 import time
 
 
-class VisionEnv(gym.Env):
+class PybulletEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, car_location=None, ball_location=None, humanoid_location=None, visual_cam_settings=None):
