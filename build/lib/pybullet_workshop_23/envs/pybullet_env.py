@@ -15,7 +15,7 @@ import time
 class PybulletEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, car_location=None, ball_location=None, humanoid_location=None, visual_cam_settings=None):
+    def __init__(self, car_location=None, ball_location=None, humanoid_location=None, visual_cam_settings=None,curr_dir=os.path.dirname(os.path.abspath(__file__))):
         p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -10)
@@ -25,10 +25,11 @@ class PybulletEnv(gym.Env):
         self.ball_location = ball_location
         self.humanoid_location = humanoid_location
         self.visual_cam_settings = visual_cam_settings
+        self.curr_dir = curr_dir
         self.load_env()
 
     def load_env(self):
-        current_dir = os.path.dirname(os.path.abspath(__file__))
+        current_dir = self.curr_dir
         urdf_dir = os.path.join(current_dir, 'urdf')
         print(urdf_dir)
 
