@@ -15,33 +15,30 @@ import time
 class PybulletEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, car_location=None, ball_location=None, humanoid_location=None, visual_cam_settings=None,curr_dir=os.path.dirname(os.path.abspath(__file__))):
+    def __init__(self, arena=None,car_location=None, ball_location=None, humanoid_location=None, visual_cam_settings=None):
         p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -10)
         p.setRealTimeSimulation(1)
 
+        self.arena = arena
         self.car_location = car_location
         self.ball_location = ball_location
         self.humanoid_location = humanoid_location
         self.visual_cam_settings = visual_cam_settings
-        self.curr_dir = curr_dir
         self.load_env()
 
     def load_env(self):
-        current_dir = self.curr_dir
-        urdf_dir = os.path.join(current_dir, 'urdf')
-        print(urdf_dir)
-
-        self.arena = p.loadURDF(os.path.join(urdf_dir, 'arena/arena_v0.urdf'))
         if self.car_location is not None:
-            self.car = p.loadURDF(os.path.join(urdf_dir, 'car/car.urdf'), self.car_location,
-                                  p.getQuaternionFromEuler([0, 0, 0]))
+            self.arena = p.loadURDF('urdf/arena/arena_v0.urdf')
+        elif int(self.arena) == 1:
+            self.arena = p.loadURDF('urdf/arena/track.urdf')
+        if self.car_location is not None:
+            self.car = p.loadURDF('urdf/car/car.urdf', self.car_location, p.getQuaternionFromEuler([0, 0, 0]))
         if self.ball_location is not None:
-            self.ball = p.loadURDF(os.path.join(urdf_dir, 'ball/ball_red.urdf'), self.ball_location,
-                                   p.getQuaternionFromEuler([0, 0, 0]))
+            self.ball = p.loadURDF('urdf/ball/ball_red.urdf', self.ball_location, p.getQuaternionFromEuler([0, 0, 0]))
         if self.humanoid_location is not None:
-            self.humanoid = p.loadURDF(os.path.join(urdf_dir, 'humanoid/humanoid_red.urdf'), self.humanoid_location,
+            self.humnaoid = p.loadURDF('urdf/humanoid/humanoid_red.urdf', self.humanoid_location,
                                        p.getQuaternionFromEuler([0, 0, 0]))
         if self.visual_cam_settings is not None:
             p.resetDebugVisualizerCamera(self.visual_cam_settings['cam_dist'], self.visual_cam_settings['cam_yaw'],

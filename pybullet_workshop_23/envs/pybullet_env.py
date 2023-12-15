@@ -15,12 +15,13 @@ import time
 class PybulletEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, car_location=None, ball_location=None, humanoid_location=None, visual_cam_settings=None):
+    def __init__(self, arena=None,car_location=None, ball_location=None, humanoid_location=None, visual_cam_settings=None):
         p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -10)
         p.setRealTimeSimulation(1)
 
+        self.arena = arena
         self.car_location = car_location
         self.ball_location = ball_location
         self.humanoid_location = humanoid_location
@@ -28,7 +29,10 @@ class PybulletEnv(gym.Env):
         self.load_env()
 
     def load_env(self):
-        self.arena = p.loadURDF('urdf/arena/arena_v0.urdf')
+        if self.car_location is not None:
+            self.arena = p.loadURDF('urdf/arena/arena_v0.urdf')
+        elif int(self.arena) == 1:
+            self.arena = p.loadURDF('urdf/arena/track.urdf')
         if self.car_location is not None:
             self.car = p.loadURDF('urdf/car/car.urdf', self.car_location, p.getQuaternionFromEuler([0, 0, 0]))
         if self.ball_location is not None:
