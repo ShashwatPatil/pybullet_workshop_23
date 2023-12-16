@@ -33,6 +33,8 @@ class PybulletEnv(gym.Env):
         print(path)
         if self.arena is None:
             self.arena = p.loadURDF('urdf/arena/arena_v0.urdf')
+        elif int(self.arena) == 0:
+            p.loadURDF('plane.urdf')
         elif int(self.arena) == 1:
             p.loadURDF('plane.urdf')
             self.arena = p.loadURDF('urdf/arena/track.urdf')
