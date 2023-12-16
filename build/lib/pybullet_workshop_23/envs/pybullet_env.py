@@ -29,9 +29,12 @@ class PybulletEnv(gym.Env):
         self.load_env()
 
     def load_env(self):
-        if self.car_location is not None:
+        path = os.path.dirname(os.path.abspath(__file__))
+        print(path)
+        if self.arena is None:
             self.arena = p.loadURDF('urdf/arena/arena_v0.urdf')
         elif int(self.arena) == 1:
+            p.loadURDF('plane.urdf')
             self.arena = p.loadURDF('urdf/arena/track.urdf')
         if self.car_location is not None:
             self.car = p.loadURDF('urdf/car/car.urdf', self.car_location, p.getQuaternionFromEuler([0, 0, 0]))
