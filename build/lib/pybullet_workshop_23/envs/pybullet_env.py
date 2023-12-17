@@ -32,12 +32,12 @@ class PybulletEnv(gym.Env):
         path = os.path.dirname(os.path.abspath(__file__))
         print(path)
         if self.arena == "arena2":
-            self.arena = p.loadURDF('urdf/arena/arena_v0.urdf')
+            p.loadURDF('urdf/arena/arena_v0.urdf')
         elif self.arena == "default":
             p.loadURDF('plane.urdf')
         elif self.arena == "arena1":
             p.loadURDF('plane.urdf')
-            self.arena = p.loadURDF('urdf/arena/track.urdf')
+            p.loadURDF('urdf/arena/track.urdf',[0,0,0.05])
         if self.car_location is not None:
             self.car = p.loadURDF('urdf/car/car.urdf', self.car_location, p.getQuaternionFromEuler([0, 0, 0]))
         if self.ball_location is not None:
@@ -74,8 +74,14 @@ class PybulletEnv(gym.Env):
         orn = p.getEulerFromQuaternion(p.getBasePositionAndOrientation(self.car)[1])
         pos = p.getBasePositionAndOrientation(self.car)[0]
         pos = np.add(pos, np.array([0, 0, cam_height]))
-        camera_eye = [pos[0] + 0.4 * np.cos(orn[2]), pos[1] + 0.4 * np.sin(orn[2]), pos[2] + 1.15 * np.cos(orn[0])]
-        target_pos = [pos[0] - 2 * np.cos(orn[2]), pos[1] - 2 * np.sin(orn[2]), pos[2] + 1.15 * np.cos(orn[0])]
+
+        if self.arena == "arena1":
+            camera_eye = [pos[0] - 1 * np.cos(orn[2]), pos[1] - 1 * np.sin(orn[2]), pos[2] + 1.2 * np.cos(orn[0])]
+            target_pos = [pos[0] - 1.5 * np.cos(orn[2]), pos[1] - 1.5 * np.sin(orn[2]), pos[2] + 0.4 * np.cos(orn[0])]
+        else:
+            camera_eye = [pos[0] + 0.4 * np.cos(orn[2]), pos[1] + 0.4 * np.sin(orn[2]), pos[2] + 1.15 * np.cos(orn[0])]
+            target_pos = [pos[0] - 2 * np.cos(orn[2]), pos[1] - 2 * np.sin(orn[2]), pos[2] + 1.15 * np.cos(orn[0])]
+
         view_matrix = p.computeViewMatrix(camera_eye, target_pos, [0, 0, 1])
         proj_matrix = p.computeProjectionMatrixFOV(60, dims[0] / dims[1], 0.02, 50)
         images = p.getCameraImage(dims[0], dims[1], view_matrix, proj_matrix, shadow=True,
